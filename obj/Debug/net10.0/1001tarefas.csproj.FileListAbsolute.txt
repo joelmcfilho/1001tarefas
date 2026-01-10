@@ -1,0 +1,14 @@
+d:\Projetos\1001tarefas\bin\Debug\net10.0\1001tarefas.exe
+D:\Projetos\1001tarefas\bin\Debug\net10.0\1001tarefas.deps.json
+D:\Projetos\1001tarefas\bin\Debug\net10.0\1001tarefas.runtimeconfig.json
+d:\Projetos\1001tarefas\bin\Debug\net10.0\1001tarefas.dll
+d:\Projetos\1001tarefas\bin\Debug\net10.0\1001tarefas.pdb
+d:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.GeneratedMSBuildEditorConfig.editorconfig
+d:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.AssemblyInfoInputs.cache
+d:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.AssemblyInfo.cs
+d:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.csproj.CoreCompileInputs.cache
+d:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.dll
+d:\Projetos\1001tarefas\obj\Debug\net10.0\refint\1001tarefas.dll
+d:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.pdb
+D:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.genruntimeconfig.cache
+D:\Projetos\1001tarefas\obj\Debug\net10.0\ref\1001tarefas.dll
