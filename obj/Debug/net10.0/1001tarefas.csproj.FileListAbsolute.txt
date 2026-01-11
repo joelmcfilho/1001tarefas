@@ -12,3 +12,4 @@ d:\Projetos\1001tarefas\obj\Debug\net10.0\refint\1001tarefas.dll
 d:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.pdb
 D:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.genruntimeconfig.cache
 D:\Projetos\1001tarefas\obj\Debug\net10.0\ref\1001tarefas.dll
+d:\Projetos\1001tarefas\obj\Debug\net10.0\1001tarefas.sourcelink.json

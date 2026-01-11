@@ -1,38 +1,57 @@
-﻿// static void MenuPrincipal()
-// {
-//     Console.WriteLine("---ESCOLHA UMA OPÇÃO---");
-//     Console.WriteLine("[C]onsultar Tarefas");
-//     Console.WriteLine("[N]ova Tarefa");
-//     Console.WriteLine("[G]erenciar Tarefas");
-//     Console.WriteLine("[S]air");
-//     ConsoleKeyInfo escolha = Console.ReadKey();
-//     switch(escolha.KeyChar)
-//     {
-//         case 'A':
-//         case 'a':
-//             break;
-        
-//         case "N":
-//             break;
-//         case "G":
-//             break;
-//         case "S":
-//             break;
-//     }
-// }
+﻿using System;
+using System.Drawing;
 
-List<string> menuOptions = new List<string> {"1. Consultar Tarefas","2. Nova Tarefa","3. Gerenciar Tarefas","4. Sair do Programa"};
+string[] menuOptions = {"1. Consultar Tarefas","2. Nova Tarefa","3. Gerenciar Tarefas","4. Sair do Programa"};
 int choiceIndex = 0;
 
 while(true)
 {
+    Console.BackgroundColor = ConsoleColor.DarkCyan;
+    Console.ForegroundColor = ConsoleColor.Black;
     Console.Clear();
     Console.WriteLine("                       -------** 1001 TAREFAS **-------");
-    Console.WriteLine("Selecione a opção desejada. Use as setas do teclado para mover o cursor e ENTER para selecionar.\n\n");
+    Console.WriteLine("Selecione a opção desejada. Use as setas do teclado para mover o cursor e ENTER para selecionar.\n");
 
-    for(int i = 0; i < menuOptions.Count; i++)
+    for(int i = 0; i < menuOptions.Length; i++)
     {
+        if(choiceIndex == i)
+        {
+            Console.BackgroundColor = ConsoleColor.Black;
+            Console.ForegroundColor = ConsoleColor.White;
+            Console.Write(">");
+        }
+        else
+        {
+            Console.BackgroundColor = ConsoleColor.DarkCyan;
+            Console.ForegroundColor = ConsoleColor.Black;
+            Console.Write(" ");
+        }
         Console.WriteLine(menuOptions[i]);
     }
-    Console.ReadKey();
+    
+    ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+
+    if(MoveCursor.Key == ConsoleKey.UpArrow)
+    {
+        if(choiceIndex == 0)
+        {
+            choiceIndex = menuOptions.Length - 1;
+        }
+        else if(choiceIndex > 0)
+        {
+            choiceIndex--;
+        }
+    }
+    else if(MoveCursor.Key == ConsoleKey.DownArrow)
+    {
+        if(choiceIndex == menuOptions.Length - 1)
+        {
+            choiceIndex = 0;
+        }
+        else
+        {
+            choiceIndex++;
+        }
+    }
 }
+
