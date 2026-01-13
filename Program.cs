@@ -1,14 +1,20 @@
 ﻿using System;
 using System.Drawing;
+using _1001tarefas.Models;
+using _1001tarefas.Repository;
 
 // An Array containing all options in the Main Menu
 string[] menuOptions = {"1. Show Tasks","2. New Tasks","3. Manage Tasks","4. Exit Program"};
 // This will carry the position of the cursor
 int choiceIndex = 0;
 
+TaskRepository taskRepository = new();
+
 // Main Menu Loop!
 while(true)
 {
+    taskRepository.EnsureJsonExists();
+    taskRepository.GetTasks();
     Console.BackgroundColor = ConsoleColor.DarkCyan;
     Console.ForegroundColor = ConsoleColor.Black;
     Console.Clear();
