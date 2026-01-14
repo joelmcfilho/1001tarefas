@@ -5,6 +5,7 @@ using _1001tarefas.Repository;
 
 // An Array containing all options in the Main Menu
 string[] menuOptions = {"1. Show Tasks","2. New Tasks","3. Manage Tasks","4. Exit Program"};
+
 // This will carry the position of the cursor
 int choiceIndex = 0;
 
@@ -42,6 +43,7 @@ while(true)
     
     // MoveCursor will read keys pressed in the keyboard
     ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+    
     // Now with MoveCursor instanced, it will watch for the up and down arrows, and for 
     // the ENTER key too. When UP or DOWN are pressed, it will change the value of choiceIndex, that
     // will be needed in the Main Menu option selection mechanic.
@@ -89,7 +91,8 @@ while(true)
                 break;
             case 3:
                 Console.Clear();
-                Console.WriteLine($"Opção{choiceIndex}");
+                Console.WriteLine("Thanks for using 1001 Tasks! Exiting Program...");
+                System.Console.Beep();
                 break;
                 
         }
