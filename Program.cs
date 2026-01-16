@@ -2,6 +2,7 @@
 using System.Drawing;
 using _1001tarefas.Models;
 using _1001tarefas.Repository;
+using _1001tarefas.Sources;
 
 // An Array containing all options in the Main Menu
 string[] menuOptions = {"1. Show Tasks","2. New Tasks","3. Manage Tasks","4. Exit Program"};
@@ -10,6 +11,7 @@ string[] menuOptions = {"1. Show Tasks","2. New Tasks","3. Manage Tasks","4. Exi
 int choiceIndex = 0;
 
 TaskRepository taskRepository = new();
+Utils utils = new();
 
 // Main Menu Loop!
 while(true)
@@ -75,14 +77,14 @@ while(true)
         switch(choiceIndex)
         {
             case 0:
+
                 Console.Clear();
-                Console.WriteLine($"Opção{choiceIndex}");
-                Console.ReadKey();
+                
                 break;
                 
             case 1:
                 Console.Clear();
-                Console.WriteLine($"Opção{choiceIndex}");
+                utils.NewTaskInput();
                 break;
 
             case 2:

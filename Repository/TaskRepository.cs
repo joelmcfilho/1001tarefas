@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Text.Json;
+using _1001tarefas.Models;
 
 namespace _1001tarefas.Repository
 {
@@ -31,12 +32,12 @@ namespace _1001tarefas.Repository
             }
         }
 
-        public List<Task> GetTasks()
+        public List<TaskModel> GetTasks()
         {
             try
             {
                 var json = File.ReadAllText(_filePath);
-                return JsonSerializer.Deserialize<List<Task>>(json) ?? new();
+                return JsonSerializer.Deserialize<List<TaskModel>>(json) ?? new();
             }
             catch
             {
@@ -47,7 +48,7 @@ namespace _1001tarefas.Repository
         }
 
         // Create a new Task, then save it in the JSON
-        public void CreateTask(Task task)
+        public void CreateTask(TaskModel task)
         {
             var list = GetTasks();
             list.Add(task);
@@ -56,7 +57,7 @@ namespace _1001tarefas.Repository
         }
 
         // Delete an existing task, then save the changes in the JSON
-        public void DeleteTask(Task task)
+        public void DeleteTask(TaskModel task)
         {
             var list = GetTasks();
             list.Remove(task);
@@ -64,10 +65,10 @@ namespace _1001tarefas.Repository
         }
 
         // Update an existing
-        public void UpdateTask(Task task)
+        public void UpdateTask(TaskModel task)
         {
             var list = GetTasks();
-            var index = list.FindIndex(x => x.Id == task.Id);
+            var index = list.FindIndex(x => x.id == task.id);
             if (index >= 0)
             {
                 list[index] = task;
@@ -76,7 +77,7 @@ namespace _1001tarefas.Repository
         }
 
         // Save the changes in JSON
-        public void SaveData(List<Task> newlist)
+        public void SaveData(List<TaskModel> newlist)
         {
             var json = JsonSerializer.Serialize(newlist, new JsonSerializerOptions
             {
