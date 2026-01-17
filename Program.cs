@@ -79,7 +79,7 @@ while(true)
             case 0:
 
                 Console.Clear();
-                
+                utils.ShowAllTasks();
                 break;
                 
             case 1:
@@ -93,8 +93,8 @@ while(true)
                 break;
             case 3:
                 Console.Clear();
-                Console.WriteLine("Thanks for using 1001 Tasks! Exiting Program...");
-                System.Console.Beep();
+                Console.WriteLine("Thanks for using 1001 Tasks! Exiting Program...press any key to continue.");
+                Environment.Exit(0);
                 break;
                 
         }

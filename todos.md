@@ -1,7 +1,5 @@
-- Refatorar o código da criação de tarefas para: 
--- Evitar pelo menos Titulo Null
--- Cancelar a criação pressionando tecla ESC
-
-- Serviço de DELETE
-- Serviço de UPDATE
-- Serviço de READ funcional com ordenação por Data da tarefa e por pendência
+- Método auxiliar que faça a ordenação por data da tarefa e status
+ -- Continuar construção de método, verificando se falta algo. No final será apenas um display dos dados presentes no JSON
+- Serviço de DELETE com navegação dinamica
+- Serviço de UPDATE com navegação dinamica
+- Serviço de READ com navegação dinâmica

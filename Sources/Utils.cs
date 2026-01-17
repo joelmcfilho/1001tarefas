@@ -1,31 +1,71 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Reflection.Metadata.Ecma335;
+using System.Text;
 using System.Threading.Tasks;
+using _1001tarefas.Models;
 using _1001tarefas.Repository;
 
 namespace _1001tarefas.Sources
 {
     public class Utils
     {
+        // Dynamic string builder, with the possibility to cancel the operation anytime.
+        static bool ReadLineWithEscape(out string stringFinal)
+        {   
+            var input = new StringBuilder();
+
+            while(true)
+            {
+                var key = Console.ReadKey(true);
+
+                if(key.Key == ConsoleKey.Escape)
+                {
+                    stringFinal = null;
+                    return false;
+                }
+                else if(key.Key == ConsoleKey.Enter)
+                {
+                    stringFinal = input.ToString();
+                    Console.WriteLine();
+                    return true;
+                }
+                else if(key.Key == ConsoleKey.Backspace && input.Length > 0)
+                {
+                    input.Remove(input.Length-1,1);
+                    Console.Write("\b \b");
+                }
+                else if(!char.IsControl(key.KeyChar))
+                {
+                    input.Append(key.KeyChar);
+                    Console.Write(key.KeyChar);
+                }
+            }
+        }
+
+
+        // Task Creation main method
         public void NewTaskInput()
         {
             bool isDateRight = false;
             DateTime dateFormated = DateTime.MinValue;
             TaskRepository taskRep = new();
 
-            Console.WriteLine("Type your new task infos below.");
-
-            Console.Write("Title: ");
-            string title = Console.ReadLine().Trim();
+            Console.WriteLine("Type your new task infos below. Press ESC anytime to return to Main Menu!");
             
+            Console.Write("Title: ");
+            // This is an bool condition check... if the user press ESC anytime, it will get FALSE 
+            // in value, and will trigger the IF below, and return to the main menu loop
+            if(!ReadLineWithEscape(out string title)) return;
+                
             Console.Write("Description: ");
-            string desc = Console.ReadLine().Trim();
+            if(!ReadLineWithEscape(out string desc)) return;
             
             while(isDateRight == false)
             {
                 Console.Write("Date (Format 'DD/MM/YY' or 'DD/MM/YYYY')");
-                string dateAndTime = Console.ReadLine().Trim();
+                if(!ReadLineWithEscape(out string dateAndTime)) return;
                 
                 try
                 {
@@ -45,9 +85,7 @@ namespace _1001tarefas.Sources
                 }
             
             }
-            
-
-
+                        
             var newTask = new _1001tarefas.Models.TaskModel
             {
                 Name = title,
@@ -63,6 +101,26 @@ namespace _1001tarefas.Sources
             Console.ReadKey();
 
             return;        
+        }
+
+        // Method to delete task, with dynamic selection mode
+        public void TaskDeletion()
+        {
+            Console.WriteLine("Select an Task to Delete: (Press ESC anytime to return to Main Menu!)");
+        }
+
+        public void ShowAllTasks()
+        {
+            TaskRepository taskRepository = new();
+
+            List<TaskModel> showList = taskRepository.GetTasks();
+            foreach(var x in showList)
+            {
+                Console.WriteLine($"{showList.IndexOf(x) + 1}: {x.Name} - {x.Dateandtime.ToString("d")} - {x.Status}");
+                
+            }
+            Console.ReadKey();
+
         }
     }
 }
