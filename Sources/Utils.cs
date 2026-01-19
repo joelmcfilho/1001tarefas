@@ -106,10 +106,88 @@ namespace _1001tarefas.Sources
         // Method to delete task, with dynamic selection mode
         public void TaskDeletion()
         {
-            Console.WriteLine("Select an Task to Delete: (Press ESC anytime to return to Main Menu!)");
-        }
+            int choiceIndex = 0;
+            TaskRepository taskRep = new();
+            while(true)
+            {
+                    
+                    Console.Clear();
+                    Console.WriteLine("Select an Task to Delete: (Press ESC anytime to return to Main Menu!)");
+                    List<TaskModel> deleteList = taskRep.GetTasks();
 
-        public void ShowAllTasks()
+                    
+                    
+                    for(int i = 0; i < deleteList.Count; i++)
+                    {                
+                        if(choiceIndex == i)
+                        {
+                            Console.BackgroundColor = ConsoleColor.Black;
+                            Console.ForegroundColor = ConsoleColor.White;
+                            Console.Write(">");
+                        }
+                        else
+                        {
+                            Console.BackgroundColor = ConsoleColor.DarkCyan;
+                            Console.ForegroundColor = ConsoleColor.Black;
+                            Console.Write(" ");
+                        }
+                        Console.WriteLine($"{i+1}: {deleteList[i].Name} - {deleteList[i].Dateandtime.ToString("d")} - {deleteList[i].Status}");
+                        
+                        
+                    }
+                                        
+                    ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                                
+                    if(MoveCursor.Key == ConsoleKey.UpArrow)
+                    {
+                        if(choiceIndex == 0)
+                        {
+                            choiceIndex = deleteList.Count - 1;
+                        }
+                        else if(choiceIndex > 0)
+                        {
+                            choiceIndex--;
+                        }
+                    }
+                    else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                    {
+                        if(choiceIndex == deleteList.Count - 1)
+                        {
+                            choiceIndex = 0;
+                        }
+                        else
+                        {
+                            choiceIndex++;
+                        }
+                    }
+                    else if(MoveCursor.Key == ConsoleKey.Enter)
+                    {
+                        
+                        Console.Clear();
+                        Console.WriteLine("Are you sure? You can't undo this action!");
+                        Console.WriteLine("Press Y to DELETE, or any other Key to Cancel:");
+                        ConsoleKeyInfo deleteDecision = Console.ReadKey(true);
+                        if(deleteDecision.Key == ConsoleKey.Y)
+                            {
+                                Console.Clear();
+                                Console.WriteLine($"{deleteList[choiceIndex].Name} task deleted sucessfully!");
+                                taskRep.DeleteTask(deleteList[choiceIndex]);
+                                
+                            }
+                        else
+                            {
+                                return;
+                            }
+                    }
+                    else if(MoveCursor.Key == ConsoleKey.Escape)
+                    {
+                        break;
+                    }
+             }
+            }
+            
+
+        public List<TaskModel> ShowAllTasks()
         {
             TaskRepository taskRepository = new();
 
@@ -118,8 +196,8 @@ namespace _1001tarefas.Sources
             {
                 Console.WriteLine($"{showList.IndexOf(x) + 1}: {x.Name} - {x.Dateandtime.ToString("d")} - {x.Status}");
                 
-            }
-            Console.ReadKey();
+            }return showList;
+            
 
         }
     }

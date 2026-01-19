@@ -5,7 +5,7 @@ using _1001tarefas.Repository;
 using _1001tarefas.Sources;
 
 // An Array containing all options in the Main Menu
-string[] menuOptions = {"1. Show Tasks","2. New Tasks","3. Manage Tasks","4. Exit Program"};
+string[] menuOptions = {"1. Show Tasks","2. New Tasks","3. Edit a Task","4. Delete Task","5. Exit Program"};
 
 // This will carry the position of the cursor
 int choiceIndex = 0;
@@ -80,6 +80,7 @@ while(true)
 
                 Console.Clear();
                 utils.ShowAllTasks();
+                Console.ReadKey();
                 break;
                 
             case 1:
@@ -89,11 +90,17 @@ while(true)
 
             case 2:
                 Console.Clear();
-                Console.WriteLine($"Opção{choiceIndex}");
+                
+
                 break;
             case 3:
                 Console.Clear();
+                utils.TaskDeletion();
+                break;
+            case 4:
+                Console.Clear();
                 Console.WriteLine("Thanks for using 1001 Tasks! Exiting Program...press any key to continue.");
+                Console.ReadKey();
                 Environment.Exit(0);
                 break;
                 
