@@ -92,7 +92,7 @@ namespace _1001tarefas.Sources
                 Description = desc,
                 Dateandtime = dateFormated,
                 // Status will be, for default, 'PENDENT'. The user must change it manually to 
-                // 'DONE' or 'CANCELLED'.
+                // 'DONE' or Cancel/Delete it by an specific operation'.
                 Status = Enums.StatusOfTask.Pendent
             };
 
@@ -112,11 +112,11 @@ namespace _1001tarefas.Sources
             {
                     
                     Console.Clear();
-                    Console.WriteLine("Select an Task to Delete: (Press ESC anytime to return to Main Menu!)");
+                    Console.WriteLine("Select an Task to Delete: (Press ESC anytime to return to Main Menu!)\n");
                     List<TaskModel> deleteList = taskRep.GetTasks();
 
                     
-                    
+                    //Dynamic selection of tasks
                     for(int i = 0; i < deleteList.Count; i++)
                     {                
                         if(choiceIndex == i)
@@ -169,9 +169,10 @@ namespace _1001tarefas.Sources
                         ConsoleKeyInfo deleteDecision = Console.ReadKey(true);
                         if(deleteDecision.Key == ConsoleKey.Y)
                             {
+                                //Deletes Task searching for its Guid.id attribute
                                 Console.Clear();
                                 Console.WriteLine($"{deleteList[choiceIndex].Name} task deleted sucessfully!");
-                                taskRep.DeleteTask(deleteList[choiceIndex]);
+                                taskRep.DeleteTask(deleteList[choiceIndex].id);
                                 
                             }
                         else
@@ -186,19 +187,150 @@ namespace _1001tarefas.Sources
              }
             }
             
-
-        public List<TaskModel> ShowAllTasks()
-        {
-            TaskRepository taskRepository = new();
-
-            List<TaskModel> showList = taskRepository.GetTasks();
-            foreach(var x in showList)
+        //Read the desserialized infos from JSON and list them in an dynamic selection
+        public void ShowAllTasks()
             {
-                Console.WriteLine($"{showList.IndexOf(x) + 1}: {x.Name} - {x.Dateandtime.ToString("d")} - {x.Status}");
-                
-            }return showList;
+                TaskRepository taskRepository = new();
+                int choiceIndex = 0;
+                DateTime showTodayDate = new();
+                Console.WriteLine($"Existing Tasks - Today: {showTodayDate.Day.ToString("DD/MM/YY")}");
+
+                while(true)
+                {
+                    Console.Clear();
+                    List<TaskModel> showList = taskRepository.GetTasks();
+                    for(int i = 0; i < showList.Count; i++)
+                            {                
+                                if(choiceIndex == i)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.Write(">");
+                                }
+                                else
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                                    Console.ForegroundColor = ConsoleColor.Black;
+                                    Console.Write(" ");
+                                }
+                                Console.WriteLine($"{i+1}: {showList[i].Name} - {showList[i].Dateandtime.ToString("d")} - {showList[i].Status}");
+                                
+                                
+                            }
+                                                
+                            ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                                        
+                            if(MoveCursor.Key == ConsoleKey.UpArrow)
+                            {
+                                if(choiceIndex == 0)
+                                {
+                                    choiceIndex = showList.Count - 1;
+                                }
+                                else if(choiceIndex > 0)
+                                {
+                                    choiceIndex--;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                            {
+                                if(choiceIndex == showList.Count - 1)
+                                {
+                                    choiceIndex = 0;
+                                }
+                                else
+                                {
+                                    choiceIndex++;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Enter)
+                            {
+                                // User can see details of every task, then go back to the task selection loop
+                                Console.Clear();
+                                Console.WriteLine($"Task: {showList[choiceIndex].Name}");
+                                Console.WriteLine($"Description: {showList[choiceIndex].Description}");
+                                Console.WriteLine($"Date: {showList[choiceIndex].Dateandtime}");
+                                Console.WriteLine($"Status: {showList[choiceIndex].Status}");
+                                Console.WriteLine("--------------------------------------------");
+                                Console.WriteLine("Press Any Key to exit!");
+                                Console.ReadKey();
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Escape)
+                            {
+                                break;
+                            }
+                }
+            }
             
+            // Method to edit (update) an existing task
+            public void EditTask()
+                {
+                    TaskRepository taskRepository = new();
+                    int choiceIndex = 0;
+
+                    while(true)
+                    {
+                        Console.Clear();
+                        List<TaskModel> editList = taskRepository.GetTasks();
+                        for(int i = 0; i < editList.Count; i++)
+                                {                
+                                    if(choiceIndex == i)
+                                    {
+                                        Console.BackgroundColor = ConsoleColor.Black;
+                                        Console.ForegroundColor = ConsoleColor.White;
+                                        Console.Write(">");
+                                    }
+                                    else
+                                    {
+                                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                                        Console.ForegroundColor = ConsoleColor.Black;
+                                        Console.Write(" ");
+                                    }
+                                    Console.WriteLine($"{i+1}: {editList[i].Name} - {editList[i].Dateandtime.ToString("d")} - {editList[i].Status}");
+                                    
+                                    
+                                }
+                                                    
+                                ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                                            
+                                if(MoveCursor.Key == ConsoleKey.UpArrow)
+                                {
+                                    if(choiceIndex == 0)
+                                    {
+                                        choiceIndex = editList.Count - 1;
+                                    }
+                                    else if(choiceIndex > 0)
+                                    {
+                                        choiceIndex--;
+                                    }
+                                }
+                                else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                                {
+                                    if(choiceIndex == editList.Count - 1)
+                                    {
+                                        choiceIndex = 0;
+                                    }
+                                    else
+                                    {
+                                        choiceIndex++;
+                                    }
+                                }
+                                else if(MoveCursor.Key == ConsoleKey.Enter)
+                                {
+                                    var selectedTask = editList[choiceIndex];
+                                    Console.Clear();
+                                    Console.WriteLine("Please write the new informations for your task (Press ESC anytime to cancel):");
+                                    Console.WriteLine("--------------------------------------------------------");
+                                    Console.WriteLine($"Current Title: {editList[choiceIndex].Name} (press ENTER to keep current value)\n");
+                                    Console.WriteLine($"Current Title: {editList[choiceIndex].Name}");
+
+                                }
+                                else if(MoveCursor.Key == ConsoleKey.Escape)
+                                {
+                                    break;
+                                }
+                    }
+                }
 
         }
+        
     }
-}

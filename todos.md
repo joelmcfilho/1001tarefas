@@ -1,5 +1,2 @@
-- Método auxiliar que faça a ordenação por data da tarefa e status
- -- Continuar construção de método, verificando se falta algo. No final será apenas um display dos dados presentes no JSON
-- Serviço de DELETE com navegação dinamica
-- Serviço de UPDATE com navegação dinamica
-- Serviço de READ com navegação dinâmica
+- Serviço de UPDATE com navegação dinamica (finalizar)
+- Resolver o bug da tela ficar preta ao retornar para choiceIndex = 0 (só não acontece no menu, será pq o menu é Array e os outros é List?)

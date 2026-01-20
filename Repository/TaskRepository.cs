@@ -58,10 +58,10 @@ namespace _1001tarefas.Repository
         }
 
         // Delete an existing task, then save the changes in the JSON
-        public void DeleteTask(TaskModel task)
+        public void DeleteTask(Guid id)
         {
             var list = GetTasks();
-            list.Remove(task);
+            list.RemoveAll(x => x.id == id);
             SaveData(list);
         }
 

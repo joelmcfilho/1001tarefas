@@ -5,6 +5,6 @@ namespace _1001tarefas.Enums
         Done,
         //For Default, any created task will be Pendent
         Pendent,
-        Cancelled
+        Late
     }
 }
