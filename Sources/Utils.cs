@@ -4,6 +4,7 @@ using System.Linq;
 using System.Reflection.Metadata.Ecma335;
 using System.Text;
 using System.Threading.Tasks;
+using _1001tarefas.Enums;
 using _1001tarefas.Models;
 using _1001tarefas.Repository;
 
@@ -108,12 +109,21 @@ namespace _1001tarefas.Sources
         {
             int choiceIndex = 0;
             TaskRepository taskRep = new();
+            List<TaskModel> deleteList = taskRep.GetTasks();
+            if(deleteList.Count == 0)
+            {
+                Console.WriteLine("There is no Tasks in the system. Press any key to return.");
+                Console.ReadKey();
+                return;
+            }
+            else
+            {
             while(true)
             {
                     
                     Console.Clear();
                     Console.WriteLine("Select an Task to Delete: (Press ESC anytime to return to Main Menu!)\n");
-                    List<TaskModel> deleteList = taskRep.GetTasks();
+                    
 
                     
                     //Dynamic selection of tasks
@@ -186,19 +196,28 @@ namespace _1001tarefas.Sources
                     }
              }
             }
+            }
             
         //Read the desserialized infos from JSON and list them in an dynamic selection
         public void ShowAllTasks()
             {
                 TaskRepository taskRepository = new();
                 int choiceIndex = 0;
-                DateTime showTodayDate = new();
-                Console.WriteLine($"Existing Tasks - Today: {showTodayDate.Day.ToString("DD/MM/YY")}");
-
+                DateTime showTodayDate = DateTime.Today;
+                List<TaskModel> showList = taskRepository.GetTasks();
+                
+                if(showList.Count == 0)
+                {
+                    Console.WriteLine("There is no Tasks in the system. Press any key to return.");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
                 while(true)
                 {
                     Console.Clear();
-                    List<TaskModel> showList = taskRepository.GetTasks();
+                    Console.WriteLine($"Existing Tasks - Today: {showTodayDate:dd/MM/yy}");
                     for(int i = 0; i < showList.Count; i++)
                             {                
                                 if(choiceIndex == i)
@@ -259,18 +278,297 @@ namespace _1001tarefas.Sources
                                 break;
                             }
                 }
+                }
             }
+
+            public void OnlyPendent()
+            {
+                while(true)
+                {
+                TaskRepository taskRepository = new();
+                int choiceIndex = 0;
+                DateTime showTodayDate = DateTime.Today;
+                StatusOfTask taskCond = StatusOfTask.Pendent;
+                
+                List<TaskModel> showList = taskRepository.GetTasks();
+                List<TaskModel> query = showList.Where(x => x.Status == taskCond).ToList();
+                if(query.Count == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("There is no tasks PENDENT in the system. Press Any Key to return.");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
+                while(true)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"Existing Tasks marked as PENDENT - Today: {showTodayDate:dd/MM/yy}");
+                    for(int i = 0; i < query.Count; i++)
+
+                            {                
+                                if(choiceIndex == i)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.Write(">");
+                                }
+                                else
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                                    Console.ForegroundColor = ConsoleColor.Black;
+                                    Console.Write(" ");
+                                }
+                                Console.WriteLine($"{i+1}: {query[i].Name} - {query[i].Dateandtime.ToString("d")} - {query[i].Status}");
+                                
+                                
+                            }
+                                                
+                            ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                                        
+                            if(MoveCursor.Key == ConsoleKey.UpArrow)
+                            {
+                                if(choiceIndex == 0)
+                                {
+                                    choiceIndex = query.Count - 1;
+                                }
+                                else if(choiceIndex > 0)
+                                {
+                                    choiceIndex--;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                            {
+                                if(choiceIndex == query.Count - 1)
+                                {
+                                    choiceIndex = 0;
+                                }
+                                else
+                                {
+                                    choiceIndex++;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Enter)
+                            {
+                                // User can see details of every task, then go back to the task selection loop
+                                Console.Clear();
+                                Console.WriteLine($"Task: {query[choiceIndex].Name}");
+                                Console.WriteLine($"Description: {query[choiceIndex].Description}");
+                                Console.WriteLine($"Date: {query[choiceIndex].Dateandtime}");
+                                Console.WriteLine($"Status: {query[choiceIndex].Status}");
+                                Console.WriteLine("--------------------------------------------");
+                                Console.WriteLine("Press Any Key to exit!");
+                                Console.ReadKey();
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Escape)
+                            {
+                                return;
+                            }
+                }
+                }
+                }
+            }
+
+            public void OnlyDone()
+            {
+                while(true)
+                {
+                TaskRepository taskRepository = new();
+                int choiceIndex = 0;
+                DateTime showTodayDate = DateTime.Today;
+                StatusOfTask taskCond = StatusOfTask.Done;
+                Console.WriteLine($"Existing Tasks marked as DONE - Today: {showTodayDate:dd/MM/yy}");
+                List<TaskModel> showList = taskRepository.GetTasks();
+                List<TaskModel> query = showList.Where(x => x.Status == taskCond).ToList();
+                if(query.Count == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("There is no DONE tasks in the system. Press Any Key to return.");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
+                while(true)
+                {
+                    Console.Clear();
+                    for(int i = 0; i < query.Count; i++)
+
+                            {                
+                                if(choiceIndex == i)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.Write(">");
+                                }
+                                else
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                                    Console.ForegroundColor = ConsoleColor.Black;
+                                    Console.Write(" ");
+                                }
+                                Console.WriteLine($"{i+1}: {query[i].Name} - {query[i].Dateandtime.ToString("d")} - {query[i].Status}");
+                                
+                                
+                            }
+                                                
+                            ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                                        
+                            if(MoveCursor.Key == ConsoleKey.UpArrow)
+                            {
+                                if(choiceIndex == 0)
+                                {
+                                    choiceIndex = query.Count - 1;
+                                }
+                                else if(choiceIndex > 0)
+                                {
+                                    choiceIndex--;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                            {
+                                if(choiceIndex == query.Count - 1)
+                                {
+                                    choiceIndex = 0;
+                                }
+                                else
+                                {
+                                    choiceIndex++;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Enter)
+                            {
+                                // User can see details of every task, then go back to the task selection loop
+                                Console.Clear();
+                                Console.WriteLine($"Task: {query[choiceIndex].Name}");
+                                Console.WriteLine($"Description: {query[choiceIndex].Description}");
+                                Console.WriteLine($"Date: {query[choiceIndex].Dateandtime}");
+                                Console.WriteLine($"Status: {query[choiceIndex].Status}");
+                                Console.WriteLine("--------------------------------------------");
+                                Console.WriteLine("Press Any Key to exit!");
+                                Console.ReadKey();
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Escape)
+                            {
+                                return;
+                            }
+                }
+                }
+                }
+            }
+
+            public void OnlyLate()
+            {
+                while(true)
+                {
+                TaskRepository taskRepository = new();
+                int choiceIndex = 0;
+                DateTime showTodayDate = DateTime.Today;
+                StatusOfTask taskCond = StatusOfTask.Late;
+                Console.WriteLine($"Existing Tasks marked as LATE - Today: {showTodayDate:dd/MM/yy}");
+                List<TaskModel> showList = taskRepository.GetTasks();
+                List<TaskModel> query = showList.Where(x => x.Status == taskCond).ToList();
+                if(query.Count == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("There is no LATE tasks in the system. Press Any Key to return.");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
+                while(true)
+                {
+                    Console.Clear();
+                    for(int i = 0; i < query.Count; i++)
+
+                            {                
+                                if(choiceIndex == i)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.Write(">");
+                                }
+                                else
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                                    Console.ForegroundColor = ConsoleColor.Black;
+                                    Console.Write(" ");
+                                }
+                                Console.WriteLine($"{i+1}: {query[i].Name} - {query[i].Dateandtime.ToString("d")} - {query[i].Status}");
+                                
+                                
+                            }
+                                                
+                            ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                                        
+                            if(MoveCursor.Key == ConsoleKey.UpArrow)
+                            {
+                                if(choiceIndex == 0)
+                                {
+                                    choiceIndex = query.Count - 1;
+                                }
+                                else if(choiceIndex > 0)
+                                {
+                                    choiceIndex--;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                            {
+                                if(choiceIndex == query.Count - 1)
+                                {
+                                    choiceIndex = 0;
+                                }
+                                else
+                                {
+                                    choiceIndex++;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Enter)
+                            {
+                                // User can see details of every task, then go back to the task selection loop
+                                Console.Clear();
+                                Console.WriteLine($"Task: {query[choiceIndex].Name}");
+                                Console.WriteLine($"Description: {query[choiceIndex].Description}");
+                                Console.WriteLine($"Date: {query[choiceIndex].Dateandtime}");
+                                Console.WriteLine($"Status: {query[choiceIndex].Status}");
+                                Console.WriteLine("--------------------------------------------");
+                                Console.WriteLine("Press Any Key to exit!");
+                                Console.ReadKey();
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Escape)
+                            {
+                                return;
+                            }
+                }
+                }
+                }
+            }
+
+
+
             
             // Method to edit (update) an existing task
             public void EditTask()
                 {
                     TaskRepository taskRepository = new();
                     int choiceIndex = 0;
-
+                    bool isDateRight = false;
+                    DateTime dateFormated = DateTime.MinValue;
+                    List<TaskModel> editList = taskRepository.GetTasks();
+                    if(editList.Count == 0)
+                    {
+                        Console.WriteLine("There is no Tasks in the system. Press any key to return.");
+                        Console.ReadKey();
+                        return;
+                    }
+                    else
+                    {
                     while(true)
                     {
                         Console.Clear();
-                        List<TaskModel> editList = taskRepository.GetTasks();
+                        
                         for(int i = 0; i < editList.Count; i++)
                                 {                
                                     if(choiceIndex == i)
@@ -320,8 +618,56 @@ namespace _1001tarefas.Sources
                                     Console.Clear();
                                     Console.WriteLine("Please write the new informations for your task (Press ESC anytime to cancel):");
                                     Console.WriteLine("--------------------------------------------------------");
-                                    Console.WriteLine($"Current Title: {editList[choiceIndex].Name} (press ENTER to keep current value)\n");
-                                    Console.WriteLine($"Current Title: {editList[choiceIndex].Name}");
+                                    Console.WriteLine($"Current Title: {selectedTask.Name} (press ENTER to keep current value)\n");
+                                    if(!ReadLineWithEscape(out string title)) return;
+                                    if(!String.IsNullOrWhiteSpace(title))
+                                        {
+                                            selectedTask.Name = title;
+                                        }
+
+                                    Console.WriteLine($"Current Description: {selectedTask.Description} (press ENTER to keep current value)\n");
+                                    if(!ReadLineWithEscape(out string desc)) return;
+                                    if(!String.IsNullOrWhiteSpace(desc))
+                                        {
+                                            selectedTask.Description = desc;
+                                        }
+
+
+                                    while(isDateRight == false)
+                                    {
+                                        Console.Write($"Current Date: {selectedTask.Dateandtime} (press ENTER to keep current value)\n");
+                                        if(!ReadLineWithEscape(out string dateAndTime)) return;
+                                        if(!String.IsNullOrWhiteSpace(dateAndTime))
+                                            {
+                                                try
+                                                {
+                                                    dateFormated = Convert.ToDateTime(dateAndTime);
+                                                    if(dateFormated >= DateTime.Today)
+                                                    {
+                                                        selectedTask.Dateandtime = dateFormated;
+                                                        isDateRight = true;
+                                                    }
+                                                    else
+                                                    {
+                                                        Console.WriteLine("Invalid date. The date entered must be equal to or later than today's date.");
+                                                    }
+                                                }
+                                                catch (Exception)
+                                                {
+                                                    Console.WriteLine("The Date must be in the 'DD/MM/YY' or 'DD/MM/YYYY'. Try again");
+                                                }
+                                            }
+                                        else
+                                            {
+                                                isDateRight = true;
+                                            }
+                                    }
+
+                                    taskRepository.UpdateTask(selectedTask);
+                                    Console.WriteLine("\nTask updated sucessfully! Press Any key...");
+                                    Console.ReadKey();
+                                    isDateRight = false;
+                                        
 
                                 }
                                 else if(MoveCursor.Key == ConsoleKey.Escape)
@@ -329,6 +675,7 @@ namespace _1001tarefas.Sources
                                     break;
                                 }
                     }
+                }
                 }
 
         }
