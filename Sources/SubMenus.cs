@@ -6,12 +6,15 @@ using System.Threading.Tasks;
 namespace _1001tarefas.Sources
 {
   
+    //This class controls all the needed submenus in the CLI dynamic selection system.
     public class SubMenus
     {
         Utils utils = new();
-        public void showTasksMenu()
+
+        // Submenu for the Option 1 in the Main Menu. It break down the selection of tasks to see All of them, or filter by its Status or Today date;
+        public void ShowTasksMenu()
         {
-            string[] showOptions = {"1. List All Tasks", "2. List PENDENT Tasks","3. List DONE Tasks", "4. List LATE Tasks"};
+            string[] showOptions = {"1. List Today Tasks","2. List All Tasks", "3. List PENDENT Tasks","4. List DONE Tasks", "5. List LATE Tasks"};
             Console.Clear();
             int choiceIndex = 0;
             
@@ -67,15 +70,18 @@ namespace _1001tarefas.Sources
                     switch(choiceIndex)
                     {
                         case 0:
-                            utils.ShowAllTasks();
+                            utils.OnlyToday();
                             break;
                         case 1:
-                            utils.OnlyPendent();
+                            utils.ShowAllTasks();
                             break;
                         case 2:
-                            utils.OnlyDone();
+                            utils.OnlyPendent();
                             break;
                         case 3:
+                            utils.OnlyDone();
+                            break;
+                        case 4:
                             utils.OnlyLate();
                             break;
                     }

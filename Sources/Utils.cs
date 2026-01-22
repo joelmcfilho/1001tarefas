@@ -45,6 +45,23 @@ namespace _1001tarefas.Sources
             }
         }
 
+        // If an task is with an date earlier than today's date, it will automatically labelled as LATE by the system
+        public void AutoLateLabeller()
+        {
+            TaskRepository taskRep = new();
+            List<TaskModel> lateList = taskRep.GetTasks().Where(x => x.Status == StatusOfTask.Pendent).ToList();
+            
+
+            for(int i=0; i < lateList.Count;i++)
+            {
+                if(lateList[i].Dateandtime < DateTime.Today)
+                {
+                    lateList[i].Status = StatusOfTask.Late;
+                    taskRep.UpdateTask(lateList[i]);
+                }
+            }
+            
+        }
 
         // Task Creation main method
         public void NewTaskInput()
@@ -94,6 +111,7 @@ namespace _1001tarefas.Sources
                 Dateandtime = dateFormated,
                 // Status will be, for default, 'PENDENT'. The user must change it manually to 
                 // 'DONE' or Cancel/Delete it by an specific operation'.
+                // The system will autoflag it 'LATE' if its date has passed
                 Status = Enums.StatusOfTask.Pendent
             };
 
@@ -102,6 +120,104 @@ namespace _1001tarefas.Sources
             Console.ReadKey();
 
             return;        
+        }
+
+        // Method to the Mark as Done option
+        public void MarkAsDone()
+        {
+            while(true)
+                {
+                TaskRepository taskRepository = new();
+                int choiceIndex = 0;                
+                List<TaskModel> query = taskRepository.GetTasks().Where(x => x.Status == StatusOfTask.Pendent || x.Status == StatusOfTask.Late).ToList();
+                if(query.Count == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine("There is no tasks PENDENT or LATE in the system. Press Any Key to return.");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
+                while(true)
+                {
+                    Console.Clear();
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine($"Choose an task to mark as DONE:\n");
+                    for(int i = 0; i < query.Count; i++)
+                        {                
+                            if(choiceIndex == i)
+                            {
+                                Console.BackgroundColor = ConsoleColor.Black;
+                                Console.ForegroundColor = ConsoleColor.White;
+                                Console.Write(">");
+                            }
+                            else
+                            {
+                                Console.BackgroundColor = ConsoleColor.DarkCyan;
+                                Console.ForegroundColor = ConsoleColor.Black;
+                                Console.Write(" ");
+                            }
+                            Console.WriteLine($"{i+1}: {query[i].Name} - {query[i].Dateandtime.ToString("d")} - {query[i].Status}");
+                            
+                            
+                        }
+                                            
+                        ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                                    
+                        if(MoveCursor.Key == ConsoleKey.UpArrow)
+                        {
+                            if(choiceIndex == 0)
+                            {
+                                choiceIndex = query.Count - 1;
+                            }
+                            else if(choiceIndex > 0)
+                            {
+                                choiceIndex--;
+                            }
+                        }
+                        else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                        {
+                            if(choiceIndex == query.Count - 1)
+                            {
+                                choiceIndex = 0;
+                            }
+                            else
+                            {
+                                choiceIndex++;
+                            }
+                        }
+                        else if(MoveCursor.Key == ConsoleKey.Enter)
+                        {
+                            var selectedTask = query[choiceIndex];
+                            while(true)
+                            {
+                            Console.Clear();
+                            Console.WriteLine($"Are you sure? {selectedTask.Name} task will be marked as DONE. It can be changed in the 'Edit an Task' option in the Main Menu.");
+                            Console.WriteLine("Press Y to confirm the operation, or any other key to Cancel!");
+                            ConsoleKeyInfo decision = Console.ReadKey(true);
+                            if(decision.Key == ConsoleKey.Y)
+                            {
+                                selectedTask.Status = StatusOfTask.Done;
+                                taskRepository.UpdateTask(selectedTask);
+                                Console.WriteLine("Marked as Done! Press any key to continue.");
+                                Console.ReadKey();
+                                break;
+                            }
+                            else
+                            {
+                                break;
+                            }
+                            }
+                        }
+                        else if(MoveCursor.Key == ConsoleKey.Escape)
+                        {
+                            return;
+                        }
+                }
+                }
+                }
         }
 
         // Method to delete task, with dynamic selection mode
@@ -119,91 +235,179 @@ namespace _1001tarefas.Sources
             else
             {
             while(true)
-            {
+            {                    
+                Console.Clear();
+                Console.BackgroundColor = ConsoleColor.DarkCyan;
+                Console.ForegroundColor = ConsoleColor.Black;
+                Console.WriteLine("Select an Task to Delete: (Press ESC anytime to return to Main Menu!)\n");
+                                
+                //Dynamic selection of tasks
+                for(int i = 0; i < deleteList.Count; i++)
+                {                
+                    if(choiceIndex == i)
+                    {
+                        Console.BackgroundColor = ConsoleColor.Black;
+                        Console.ForegroundColor = ConsoleColor.White;
+                        Console.Write(">");
+                    }
+                    else
+                    {
+                        Console.BackgroundColor = ConsoleColor.DarkCyan;
+                        Console.ForegroundColor = ConsoleColor.Black;
+                        Console.Write(" ");
+                    }
+                    Console.WriteLine($"{i+1}: {deleteList[i].Name} - {deleteList[i].Dateandtime.ToString("d")} - {deleteList[i].Status}");
+                    
+                    
+                }
+                                    
+                ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                            
+                if(MoveCursor.Key == ConsoleKey.UpArrow)
+                {
+                    if(choiceIndex == 0)
+                    {
+                        choiceIndex = deleteList.Count - 1;
+                    }
+                    else if(choiceIndex > 0)
+                    {
+                        choiceIndex--;
+                    }
+                }
+                else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                {
+                    if(choiceIndex == deleteList.Count - 1)
+                    {
+                        choiceIndex = 0;
+                    }
+                    else
+                    {
+                        choiceIndex++;
+                    }
+                }
+                else if(MoveCursor.Key == ConsoleKey.Enter)
+                {
                     
                     Console.Clear();
-                    Console.WriteLine("Select an Task to Delete: (Press ESC anytime to return to Main Menu!)\n");
-                    
-
-                    
-                    //Dynamic selection of tasks
-                    for(int i = 0; i < deleteList.Count; i++)
-                    {                
-                        if(choiceIndex == i)
+                    Console.WriteLine("Are you sure? You can't undo this action!");
+                    Console.WriteLine("Press Y to DELETE, or any other Key to Cancel:");
+                    ConsoleKeyInfo deleteDecision = Console.ReadKey(true);
+                    if(deleteDecision.Key == ConsoleKey.Y)
                         {
-                            Console.BackgroundColor = ConsoleColor.Black;
-                            Console.ForegroundColor = ConsoleColor.White;
-                            Console.Write(">");
+                            //Deletes Task searching for its Guid.id attribute
+                            Console.Clear();
+                            Console.WriteLine($"{deleteList[choiceIndex].Name} task deleted sucessfully! Press any key to continue");
+                            taskRep.DeleteTask(deleteList[choiceIndex].id);
+                            deleteList.RemoveAt(choiceIndex);
+                            Console.ReadKey();
+                            Console.Clear();
                         }
-                        else
+                    else
                         {
-                            Console.BackgroundColor = ConsoleColor.DarkCyan;
-                            Console.ForegroundColor = ConsoleColor.Black;
-                            Console.Write(" ");
+                            return;
                         }
-                        Console.WriteLine($"{i+1}: {deleteList[i].Name} - {deleteList[i].Dateandtime.ToString("d")} - {deleteList[i].Status}");
-                        
-                        
-                    }
-                                        
-                    ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
-                                
-                    if(MoveCursor.Key == ConsoleKey.UpArrow)
-                    {
-                        if(choiceIndex == 0)
-                        {
-                            choiceIndex = deleteList.Count - 1;
-                        }
-                        else if(choiceIndex > 0)
-                        {
-                            choiceIndex--;
-                        }
-                    }
-                    else if(MoveCursor.Key == ConsoleKey.DownArrow)
-                    {
-                        if(choiceIndex == deleteList.Count - 1)
-                        {
-                            choiceIndex = 0;
-                        }
-                        else
-                        {
-                            choiceIndex++;
-                        }
-                    }
-                    else if(MoveCursor.Key == ConsoleKey.Enter)
-                    {
-                        
-                        Console.Clear();
-                        Console.WriteLine("Are you sure? You can't undo this action!");
-                        Console.WriteLine("Press Y to DELETE, or any other Key to Cancel:");
-                        ConsoleKeyInfo deleteDecision = Console.ReadKey(true);
-                        if(deleteDecision.Key == ConsoleKey.Y)
-                            {
-                                //Deletes Task searching for its Guid.id attribute
-                                Console.Clear();
-                                Console.WriteLine($"{deleteList[choiceIndex].Name} task deleted sucessfully!");
-                                taskRep.DeleteTask(deleteList[choiceIndex].id);
-                                
-                            }
-                        else
-                            {
-                                return;
-                            }
-                    }
-                    else if(MoveCursor.Key == ConsoleKey.Escape)
-                    {
-                        break;
-                    }
+                }
+                else if(MoveCursor.Key == ConsoleKey.Escape)
+                {
+                    break;
+                }
              }
             }
             }
+
+        // This method returns an query with dynamic selection of the tasks that are scheduled for today's date
+        public void OnlyToday()
+        {
+            while(true)
+                {
+                TaskRepository taskRepository = new();
+                int choiceIndex = 0;                               
+                List<TaskModel> query = taskRepository.GetTasks().Where(x => x.Dateandtime == DateTime.Today).ToList();
+                if(query.Count == 0)
+                {
+                    Console.Clear();
+                    Console.WriteLine($"There is no tasks for Today in the system.\nSystem date: {DateTime.Today:dd/MM/yy}. Press Any Key to return.");
+                    Console.ReadKey();
+                    return;
+                }
+                else
+                {
+                while(true)
+                {
+                    Console.Clear();
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine($"Existing Tasks marked as PENDENT - Today: {DateTime.Today:dd/MM/yy}");
+                    for(int i = 0; i < query.Count; i++)
+
+                            {                
+                                if(choiceIndex == i)
+                                {
+                                    Console.BackgroundColor = ConsoleColor.Black;
+                                    Console.ForegroundColor = ConsoleColor.White;
+                                    Console.Write(">");
+                                }
+                                else
+                                {
+                                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                                    Console.ForegroundColor = ConsoleColor.Black;
+                                    Console.Write(" ");
+                                }
+                                Console.WriteLine($"{i+1}: {query[i].Name} - {query[i].Dateandtime.ToString("d")} - {query[i].Status}");
+                                
+                                
+                            }
+                                                
+                            ConsoleKeyInfo MoveCursor = Console.ReadKey(true);
+                                        
+                            if(MoveCursor.Key == ConsoleKey.UpArrow)
+                            {
+                                if(choiceIndex == 0)
+                                {
+                                    choiceIndex = query.Count - 1;
+                                }
+                                else if(choiceIndex > 0)
+                                {
+                                    choiceIndex--;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.DownArrow)
+                            {
+                                if(choiceIndex == query.Count - 1)
+                                {
+                                    choiceIndex = 0;
+                                }
+                                else
+                                {
+                                    choiceIndex++;
+                                }
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Enter)
+                            {
+                                // User can see details of every task, then go back to the task selection loop
+                                Console.Clear();
+                                Console.WriteLine($"Task: {query[choiceIndex].Name}");
+                                Console.WriteLine($"Description: {query[choiceIndex].Description}");
+                                Console.WriteLine($"Date: {query[choiceIndex].Dateandtime}");
+                                Console.WriteLine($"Status: {query[choiceIndex].Status}");
+                                Console.WriteLine("--------------------------------------------");
+                                Console.WriteLine("Press Any Key to exit!");
+                                Console.ReadKey();
+                            }
+                            else if(MoveCursor.Key == ConsoleKey.Escape)
+                            {
+                                return;
+                            }
+                }
+                }
+                }
+        }
             
-        //Read the desserialized infos from JSON and list them in an dynamic selection
+        //This one returns an dynamic selection of all tasks in the system.
         public void ShowAllTasks()
             {
                 TaskRepository taskRepository = new();
                 int choiceIndex = 0;
-                DateTime showTodayDate = DateTime.Today;
                 List<TaskModel> showList = taskRepository.GetTasks();
                 
                 if(showList.Count == 0)
@@ -217,7 +421,9 @@ namespace _1001tarefas.Sources
                 while(true)
                 {
                     Console.Clear();
-                    Console.WriteLine($"Existing Tasks - Today: {showTodayDate:dd/MM/yy}");
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine($"Existing Tasks - Today: {DateTime.Today:dd/MM/yy}");
                     for(int i = 0; i < showList.Count; i++)
                             {                
                                 if(choiceIndex == i)
@@ -281,17 +487,14 @@ namespace _1001tarefas.Sources
                 }
             }
 
+            // This method returns an dynamic selection of tasks flagged with the PENDENT status
             public void OnlyPendent()
             {
                 while(true)
                 {
                 TaskRepository taskRepository = new();
-                int choiceIndex = 0;
-                DateTime showTodayDate = DateTime.Today;
-                StatusOfTask taskCond = StatusOfTask.Pendent;
-                
-                List<TaskModel> showList = taskRepository.GetTasks();
-                List<TaskModel> query = showList.Where(x => x.Status == taskCond).ToList();
+                int choiceIndex = 0;                
+                List<TaskModel> query = taskRepository.GetTasks().Where(x => x.Status == StatusOfTask.Pendent).ToList();
                 if(query.Count == 0)
                 {
                     Console.Clear();
@@ -304,7 +507,9 @@ namespace _1001tarefas.Sources
                 while(true)
                 {
                     Console.Clear();
-                    Console.WriteLine($"Existing Tasks marked as PENDENT - Today: {showTodayDate:dd/MM/yy}");
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine($"Existing Tasks marked as PENDENT - Today: {DateTime.Today:dd/MM/yy}");
                     for(int i = 0; i < query.Count; i++)
 
                             {                
@@ -370,29 +575,26 @@ namespace _1001tarefas.Sources
                 }
             }
 
+            // This method returns an dynamic selection of tasks flagged with the DONE status
             public void OnlyDone()
             {
-                while(true)
-                {
                 TaskRepository taskRepository = new();
-                int choiceIndex = 0;
-                DateTime showTodayDate = DateTime.Today;
-                StatusOfTask taskCond = StatusOfTask.Done;
-                Console.WriteLine($"Existing Tasks marked as DONE - Today: {showTodayDate:dd/MM/yy}");
-                List<TaskModel> showList = taskRepository.GetTasks();
-                List<TaskModel> query = showList.Where(x => x.Status == taskCond).ToList();
+                int choiceIndex = 0;                
+                List<TaskModel> query = taskRepository.GetTasks().Where(x => x.Status == StatusOfTask.Done).ToList();          
                 if(query.Count == 0)
                 {
                     Console.Clear();
                     Console.WriteLine("There is no DONE tasks in the system. Press Any Key to return.");
                     Console.ReadKey();
-                    return;
                 }
                 else
                 {
                 while(true)
                 {
                     Console.Clear();
+                    Console.BackgroundColor = ConsoleColor.DarkCyan;
+                    Console.ForegroundColor = ConsoleColor.Black;
+                    Console.WriteLine($"Existing Tasks marked as DONE - Today: {DateTime.Today:dd/MM/yy}");
                     for(int i = 0; i < query.Count; i++)
 
                             {                
@@ -454,21 +656,20 @@ namespace _1001tarefas.Sources
                                 return;
                             }
                 }
-                }
+                
                 }
             }
 
+            // This method returns an dynamic selection of tasks flagged with the LATE status
             public void OnlyLate()
             {
-                while(true)
-                {
                 TaskRepository taskRepository = new();
                 int choiceIndex = 0;
-                DateTime showTodayDate = DateTime.Today;
-                StatusOfTask taskCond = StatusOfTask.Late;
-                Console.WriteLine($"Existing Tasks marked as LATE - Today: {showTodayDate:dd/MM/yy}");
                 List<TaskModel> showList = taskRepository.GetTasks();
-                List<TaskModel> query = showList.Where(x => x.Status == taskCond).ToList();
+                List<TaskModel> query = showList.Where(x => x.Status == StatusOfTask.Late).ToList();
+                while(true)
+                {
+                
                 if(query.Count == 0)
                 {
                     Console.Clear();
@@ -481,6 +682,7 @@ namespace _1001tarefas.Sources
                 while(true)
                 {
                     Console.Clear();
+                    Console.WriteLine($"Existing Tasks marked as LATE - Today: {DateTime.Today:dd/MM/yy}");
                     for(int i = 0; i < query.Count; i++)
 
                             {                
@@ -568,7 +770,7 @@ namespace _1001tarefas.Sources
                     while(true)
                     {
                         Console.Clear();
-                        
+                        Console.WriteLine($"Showing all Tasks in the System:\n Today{DateTime.Today:dd/MM/yy}\n");
                         for(int i = 0; i < editList.Count; i++)
                                 {                
                                     if(choiceIndex == i)
@@ -662,7 +864,30 @@ namespace _1001tarefas.Sources
                                                 isDateRight = true;
                                             }
                                     }
-
+                                    
+                                    if(selectedTask.Status == StatusOfTask.Done)
+                                    {
+                                        Console.Clear();
+                                        while(true)
+                                        {
+                                        Console.WriteLine($"The task {selectedTask.Name} is marked as DONE. You want to change it to PENDENT?");
+                                        Console.WriteLine("Press any key to keep as DONE or Y to change to PENDENT.");
+                                        ConsoleKeyInfo decision = Console.ReadKey(true);
+                                        if(decision.Key == ConsoleKey.Y)
+                                        {
+                                            selectedTask.Status = StatusOfTask.Pendent;
+                                            Console.WriteLine("Changes made sucessfully. Task is now PENDENT. Press any key to continue.");
+                                            Console.ReadKey();
+                                            Console.Clear();
+                                            break;
+                                        }
+                                        else
+                                        {
+                                            break;
+                                        }
+                                        }
+                                    }
+                                    
                                     taskRepository.UpdateTask(selectedTask);
                                     Console.WriteLine("\nTask updated sucessfully! Press Any key...");
                                     Console.ReadKey();

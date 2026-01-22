@@ -5,7 +5,7 @@ using _1001tarefas.Repository;
 using _1001tarefas.Sources;
 
 // An Array containing all options in the Main Menu
-string[] menuOptions = {"1. Show Tasks","2. New Tasks","3. Edit an Task","4. Delete Task","5. Exit Program"};
+string[] menuOptions = {"1. Show Tasks","2. Mark an Task as DONE","3. Create New Task","4. Edit an Task","5. Delete Task","6. Exit Program"};
 
 // This will carry the position of the cursor
 int choiceIndex = 0;
@@ -17,12 +17,20 @@ Utils utils = new();
 // Main Menu Loop!
 while(true)
 {
+    // This methods run every startup...if the JSON don't exists, create a blank new ready one
     taskRepository.EnsureJsonExists();
-    taskRepository.GetTasks();
+
+    // Verify in every startup if any PENDENT task date is early than today's date, then flag it LATE
+    utils.AutoLateLabeller();
+
+    // Aesthetics of the CLI...
     Console.BackgroundColor = ConsoleColor.DarkCyan;
     Console.ForegroundColor = ConsoleColor.Black;
+
+
     Console.Clear();
-    Console.WriteLine("                       -------** 1001 Tasks **-------");
+    Console.WriteLine($"----------------------** 1001 Tasks **------- {DateTime.Today:dd/MM/yy}");
+    Console.WriteLine("Created by Joel Menezes. Free to use and change it your way!");
     Console.WriteLine("To select an Option, move the Cursor with UP and DOWN arrows and press ENTER.\n");
 
     for(int i = 0; i < menuOptions.Length; i++)
@@ -75,26 +83,31 @@ while(true)
     
     if(MoveCursor.Key == ConsoleKey.Enter)
     {
+        //This leads to every other function in the program. All of them are coded in the Sources folder.
         switch(choiceIndex)
         {
             case 0:
-                subMenus.showTasksMenu();              
+                subMenus.ShowTasksMenu();              
+                break;
+
+            case 1:
+                utils.MarkAsDone();
                 break;
                 
-            case 1:
+            case 2:
                 Console.Clear();
                 utils.NewTaskInput();
                 break;
 
-            case 2:
+            case 3:
                 Console.Clear();
                 utils.EditTask();
                 break;
-            case 3:
+            case 4:
                 Console.Clear();
                 utils.TaskDeletion();
                 break;
-            case 4:
+            case 5:
                 Console.Clear();
                 Console.WriteLine("Thanks for using 1001 Tasks! Exiting Program...press any key to continue.");
                 Console.ReadKey();
