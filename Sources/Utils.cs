@@ -63,10 +63,45 @@ namespace _1001tarefas.Sources
             
         }
 
+        // This method reads the quantity of tasks for today and overdue ones, and wrap up in an string that will be shown
+        // in the header of the program main menu
+        public void HeadsUp()
+        {
+             TaskRepository taskRep = new();
+             string todayReturn = null;
+             string lateReturn = null;
+
+             List<TaskModel> taskToday =  taskRep.GetTasks().Where(x => x.Dateandtime == DateTime.Today).ToList();
+             List<TaskModel> taskLate = taskRep.GetTasks().Where(x => x.Status == StatusOfTask.Late).ToList();
+
+             if(taskToday.Count != 0)
+            {
+                todayReturn = $"You have {taskToday.Count} tasks for Today.";
+            }
+            else
+            {
+                todayReturn = "You have no tasks for Today.";
+            }
+
+            
+
+            if(taskLate.Count != 0)
+            {
+                lateReturn = $"You have {taskLate.Count} tasks overdue!";
+            }
+            else
+            {
+                lateReturn = "You have no tasks overdue!";
+            }
+
+            Console.WriteLine($"{todayReturn} {lateReturn}");
+        }
+
         // Task Creation main method
         public void NewTaskInput()
         {
             bool isDateRight = false;
+            bool isTitleRight = false;
             DateTime dateFormated = DateTime.MinValue;
             TaskRepository taskRep = new();
 
@@ -75,8 +110,8 @@ namespace _1001tarefas.Sources
             Console.Write("Title: ");
             // This is an bool condition check... if the user press ESC anytime, it will get FALSE 
             // in value, and will trigger the IF below, and return to the main menu loop
-            if(!ReadLineWithEscape(out string title)) return;
-                
+            if(!ReadLineWithEscape(out string title)) return;        
+            
             Console.Write("Description: ");
             if(!ReadLineWithEscape(out string desc)) return;
             
@@ -412,6 +447,7 @@ namespace _1001tarefas.Sources
                 
                 if(showList.Count == 0)
                 {
+                    Console.Clear();
                     Console.WriteLine("There is no Tasks in the system. Press any key to return.");
                     Console.ReadKey();
                     return;

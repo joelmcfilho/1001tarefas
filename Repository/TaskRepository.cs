@@ -10,12 +10,14 @@ namespace _1001tarefas.Repository
     public class TaskRepository
     {
         // Folder which will the JSON file will be saved
-        private readonly string _folder = "Data";
+        private readonly string _folder;
         private readonly string _filePath;
         
         // This Method will "put" the JSON "tasks.json" in the folder created above
         public TaskRepository()
         {
+            string basePath = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData);
+            _folder = Path.Combine(basePath,"1001Tasks");
             _filePath = Path.Combine(_folder,"tasks.json");
         }
         
@@ -23,14 +25,15 @@ namespace _1001tarefas.Repository
         // everytime the program starts
         public void EnsureJsonExists()
         {
-            if (!File.Exists(_filePath))
-            {
-                File.WriteAllText(_filePath,"[]");
-            }
             if (!Directory.Exists(_folder))
             {
                 Directory.CreateDirectory(_folder);
             }
+            if (!File.Exists(_filePath))
+            {
+                File.WriteAllText(_filePath,"[]");
+            }
+            
         }
 
         public List<TaskModel> GetTasks()

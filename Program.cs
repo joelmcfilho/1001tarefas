@@ -29,8 +29,9 @@ while(true)
 
 
     Console.Clear();
-    Console.WriteLine($"----------------------** 1001 Tasks **------- {DateTime.Today:dd/MM/yy}");
+    Console.WriteLine($"----------------------** 1001 Tasks **------- Today's date: {DateTime.Today:dd/MM/yy}");
     Console.WriteLine("Created by Joel Menezes. Free to use and change it your way!");
+    utils.HeadsUp();
     Console.WriteLine("To select an Option, move the Cursor with UP and DOWN arrows and press ENTER.\n");
 
     for(int i = 0; i < menuOptions.Length; i++)
@@ -115,6 +116,28 @@ while(true)
                 break;
                 
         }
+        
+            
+        }
+        if(MoveCursor.Key == ConsoleKey.Escape)
+        {
+            while(true)
+            {
+                Console.Clear();
+                Console.WriteLine("Are you sure you want to exit the program? Press ESC again to EXIT or any other key to return");
+                ConsoleKeyInfo escapeSituation = Console.ReadKey(true);
+                if(escapeSituation.Key == ConsoleKey.Escape)
+                {
+                    Console.Clear();
+                    Console.WriteLine("Thanks for using 1001 Tasks! Exiting Program...press any key to continue.");
+                    Console.ReadKey();
+                    Environment.Exit(0);
+                }
+                else
+                {
+                    break;
+                }
+            }
     }
     
         

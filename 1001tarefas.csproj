@@ -6,6 +6,7 @@
     <RootNamespace>_1001tarefas</RootNamespace>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+    <ApplicationIcon>1001tasks.ico</ApplicationIcon>
   </PropertyGroup>
 
 </Project>
